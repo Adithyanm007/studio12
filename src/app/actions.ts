@@ -1,7 +1,7 @@
 'use server';
 
 import { summarizeFactors, type SummarizeFactorsInput } from '@/ai/flows/summarize-factors';
-import { generateInsights, type GenerateInsightsInput } from '@/ai/flows/generate-insights';
+import { generateInsights, type GenerateInsightsInput, type GenerateInsightsOutput } from '@/ai/flows/generate-insights';
 import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 
 function calculateRiskScore(data: StrokeRiskFormValues): number {
@@ -39,7 +39,15 @@ function calculateRiskScore(data: StrokeRiskFormValues): number {
     return Math.min(Math.round(score), 99);
 }
 
-export async function getStrokePredictionAndInsights(formData: StrokeRiskFormValues) {
+export type PredictionAndInsightsResult = {
+  riskScore: number;
+  summary: string;
+  insights: string;
+  preventionTips: GenerateInsightsOutput['preventionTips'];
+};
+
+
+export async function getStrokePredictionAndInsights(formData: StrokeRiskFormValues): Promise<PredictionAndInsightsResult> {
     const validatedData = strokeRiskSchema.parse(formData);
 
     const riskScore = calculateRiskScore(validatedData);

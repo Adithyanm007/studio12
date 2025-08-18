@@ -4,14 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lightbulb, ShieldCheck, FileText, Repeat } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { PredictionAndInsightsResult } from '@/app/actions';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 interface ResultsDisplayProps {
-  results: {
-    riskScore: number;
-    summary: string;
-    insights: string;
-    preventionTips: string;
-  };
+  results: PredictionAndInsightsResult;
   onReset: () => void;
 }
 
@@ -102,8 +104,17 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
             <span>Prevention Tips</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="prose prose-sm max-w-none">
-          <p>{results.preventionTips}</p>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            {results.preventionTips.map((tip, index) => (
+              <AccordionItem value={`item-${index}`} key={index}>
+                <AccordionTrigger>{tip.title}</AccordionTrigger>
+                <AccordionContent className="prose prose-sm max-w-none">
+                  <p>{tip.description}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </CardContent>
       </Card>
 

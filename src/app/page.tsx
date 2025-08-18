@@ -3,20 +3,14 @@
 import { useState } from 'react';
 import { StrokeRiskForm } from '@/components/stroke-risk-form';
 import { ResultsDisplay } from '@/components/results-display';
-import { getStrokePredictionAndInsights } from '@/app/actions';
+import { getStrokePredictionAndInsights, type PredictionAndInsightsResult } from '@/app/actions';
 import type { StrokeRiskFormValues } from '@/lib/schema';
 import { Logo } from '@/components/logo';
 import { Skeleton } from '@/components/ui/skeleton';
 
-type Results = {
-  riskScore: number;
-  summary: string;
-  insights: string;
-  preventionTips: string;
-};
 
 export default function Home() {
-  const [results, setResults] = useState<Results | null>(null);
+  const [results, setResults] = useState<PredictionAndInsightsResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFormSubmit = async (data: StrokeRiskFormValues) => {

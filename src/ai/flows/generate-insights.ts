@@ -21,9 +21,14 @@ const GenerateInsightsInputSchema = z.object({
 });
 export type GenerateInsightsInput = z.infer<typeof GenerateInsightsInputSchema>;
 
+const TipSchema = z.object({
+  title: z.string().describe('A short, catchy title for the prevention tip.'),
+  description: z.string().describe('A detailed, actionable description of the prevention tip.'),
+});
+
 const GenerateInsightsOutputSchema = z.object({
   insights: z.string().describe('Personalized insights based on the risk assessment.'),
-  preventionTips: z.string().describe('Personalized prevention tips to reduce stroke risk.'),
+  preventionTips: z.array(TipSchema).describe('An array of personalized prevention tips to reduce stroke risk.'),
 });
 export type GenerateInsightsOutput = z.infer<typeof GenerateInsightsOutputSchema>;
 
@@ -49,7 +54,7 @@ const prompt = ai.definePrompt({
   Format the output into two sections:
 
   1.  Insights: Provide a concise explanation of the user's stroke risk based on the provided information.
-  2.  Prevention Tips: Offer specific and practical advice on how the user can reduce their stroke risk, considering their individual circumstances.
+  2.  Prevention Tips: Offer at least 3-5 specific and practical prevention tips as a list of objects. Each tip should have a clear title and a detailed description on how the user can reduce their stroke risk, considering their individual circumstances.
   `,
 });
 
