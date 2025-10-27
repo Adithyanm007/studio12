@@ -7,11 +7,15 @@ import { getStrokePredictionAndInsights, type PredictionAndInsightsResult } from
 import type { StrokeRiskFormValues } from '@/lib/schema';
 import { Logo } from '@/components/logo';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslation } from '@/hooks/use-translation';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 
 export default function Home() {
   const [results, setResults] = useState<PredictionAndInsightsResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
+
 
   const handleFormSubmit = async (data: StrokeRiskFormValues) => {
     setIsLoading(true);
@@ -33,13 +37,16 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-6 md:p-8">
+       <header className="absolute top-4 right-4">
+          <LanguageSwitcher />
+        </header>
       <main className="w-full max-w-3xl space-y-8">
         <header className="text-center">
           <div className="inline-block">
             <Logo />
           </div>
           <p className="mt-2 text-muted-foreground">
-            Your personal AI-powered stroke risk assistant.
+            {t('app.description')}
           </p>
         </header>
 
@@ -56,8 +63,8 @@ export default function Home() {
         )}
       </main>
       <footer className="mt-8 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} StrokeWise. All rights reserved.</p>
-        <p className="mt-1">This tool provides an estimate and is not a substitute for professional medical advice.</p>
+        <p>&copy; {new Date().getFullYear()} {t('app.title')}. {t('footer.rights')}</p>
+        <p className="mt-1">{t('footer.disclaimer')}</p>
       </footer>
     </div>
   );

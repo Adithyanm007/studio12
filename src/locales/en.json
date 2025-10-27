@@ -1,0 +1,18 @@
+{
+  "app": {
+    "title": "StrokeWise",
+    "description": "Your personal AI-powered stroke risk assistant."
+  },
+  "login": {
+    "title": "Login",
+    "description": "Enter your credentials to access your account.",
+    "email": "Email",
+    "password": "Password",
+    "button": "Sign In"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "disclaimer": "This tool provides an estimate and is not a substitute for professional medical advice."
+  },
+  "language": "Language"
+}
