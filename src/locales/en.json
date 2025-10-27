@@ -1,3 +1,4 @@
+
 {
   "app": {
     "title": "StrokeWise",
@@ -14,5 +15,94 @@
     "rights": "All rights reserved.",
     "disclaimer": "This tool provides an estimate and is not a substitute for professional medical advice."
   },
-  "language": "Language"
+  "language": {
+    "switcher": "Switch language",
+    "en": "English",
+    "kn": "ಕನ್ನಡ (Kannada)",
+    "ml": "മലയാളം (Malayalam)"
+  },
+  "form": {
+    "title": "Health Profile",
+    "description": "Please provide the following information to assess your stroke risk.",
+    "age": {
+      "label": "Age",
+      "placeholder": "e.g. 55"
+    },
+    "gender": {
+      "label": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "bmi": {
+      "label": "Body Mass Index (BMI)",
+      "placeholder": "e.g. 28.7"
+    },
+    "glucose": {
+      "label": "Average Glucose Level",
+      "placeholder": "e.g. 105.3"
+    },
+    "medicalHistory": {
+      "title": "Medical History"
+    },
+    "hypertension": {
+      "label": "Hypertension",
+      "description": "History of high blood pressure."
+    },
+    "heartDisease": {
+      "label": "Heart Disease",
+      "description": "History of heart disease."
+    },
+    "married": {
+      "label": "Ever Married?",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "residence": {
+      "label": "Residence Type",
+      "urban": "Urban",
+      "rural": "Rural"
+    },
+    "work": {
+      "label": "Work Type",
+      "placeholder": "Select a work type",
+      "private": "Private",
+      "selfEmployed": "Self-employed",
+      "govtJob": "Government Job",
+      "children": "Children",
+      "neverWorked": "Never Worked"
+    },
+    "smoking": {
+      "label": "Smoking Status",
+      "placeholder": "Select smoking status",
+      "formerly": "Formerly Smoked",
+      "never": "Never Smoked",
+      "smokes": "Smokes",
+      "unknown": "Unknown"
+    },
+    "submit": {
+      "default": "Calculate Risk",
+      "loading": "Analyzing..."
+    }
+  },
+  "results": {
+    "title": "Your Estimated Stroke Risk",
+    "risk": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "label": "Risk"
+    },
+    "disclaimer": "This is an estimate based on the information you provided. Consult a healthcare professional for a comprehensive evaluation.",
+    "summary": {
+      "title": "Key Risk Factors Summary"
+    },
+    "insights": {
+      "title": "Personalized Insights"
+    },
+    "prevention": {
+      "title": "Prevention Tips"
+    },
+    "resetButton": "Assess Again"
+  }
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useTranslation } from '@/hooks/use-translation';
 
 interface ResultsDisplayProps {
   results: PredictionAndInsightsResult;
@@ -23,36 +25,37 @@ const getRiskLevel = (score: number): 'low' | 'medium' | 'high' => {
   return 'high';
 };
 
-const riskStyles = {
-  low: {
-    textColor: 'text-green-600',
-    bgColor: 'bg-green-100',
-    borderColor: 'border-green-300',
-    text: 'Low',
-  },
-  medium: {
-    textColor: 'text-yellow-600',
-    bgColor: 'bg-yellow-100',
-    borderColor: 'border-yellow-300',
-    text: 'Medium',
-  },
-  high: {
-    textColor: 'text-destructive',
-    bgColor: 'bg-red-100',
-    borderColor: 'border-red-300',
-    text: 'High',
-  },
-};
-
 export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
+  const { t } = useTranslation();
   const riskLevel = getRiskLevel(results.riskScore);
+
+  const riskStyles = {
+    low: {
+      textColor: 'text-green-600',
+      bgColor: 'bg-green-100',
+      borderColor: 'border-green-300',
+      text: t('results.risk.low'),
+    },
+    medium: {
+      textColor: 'text-yellow-600',
+      bgColor: 'bg-yellow-100',
+      borderColor: 'border-yellow-300',
+      text: t('results.risk.medium'),
+    },
+    high: {
+      textColor: 'text-destructive',
+      bgColor: 'bg-red-100',
+      borderColor: 'border-red-300',
+      text: t('results.risk.high'),
+    },
+  };
   const styles = riskStyles[riskLevel];
 
   return (
     <div className="space-y-6 animate-in fade-in-0 duration-500">
       <Card className={cn('border-2 text-center', styles.borderColor)}>
         <CardHeader>
-          <CardTitle>Your Estimated Stroke Risk</CardTitle>
+          <CardTitle>{t('results.title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div
@@ -66,9 +69,9 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
               <span className="text-3xl">%</span>
             </span>
           </div>
-          <p className={cn('text-lg font-semibold', styles.textColor)}>{styles.text} Risk</p>
+          <p className={cn('text-lg font-semibold', styles.textColor)}>{styles.text} {t('results.risk.label')}</p>
           <p className="text-sm text-muted-foreground">
-            This is an estimate based on the information you provided. Consult a healthcare professional for a comprehensive evaluation.
+            {t('results.disclaimer')}
           </p>
         </CardContent>
       </Card>
@@ -77,7 +80,7 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5 text-primary" />
-            <span>Key Risk Factors Summary</span>
+            <span>{t('results.summary.title')}</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="prose prose-sm max-w-none">
@@ -89,7 +92,7 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Lightbulb className="h-5 w-5 text-primary" />
-            <span>Personalized Insights</span>
+            <span>{t('results.insights.title')}</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="prose prose-sm max-w-none">
@@ -101,7 +104,7 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-primary" />
-            <span>Prevention Tips</span>
+            <span>{t('results.prevention.title')}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -120,7 +123,7 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
 
       <div className="text-center">
         <Button onClick={onReset}>
-          <Repeat /> Assess Again
+          <Repeat /> {t('results.resetButton')}
         </Button>
       </div>
     </div>

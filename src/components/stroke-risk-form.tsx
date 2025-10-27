@@ -21,6 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from '@/hooks/use-translation';
 
 interface StrokeRiskFormProps {
   onSubmit: (data: StrokeRiskFormValues) => void;
@@ -41,6 +42,7 @@ const defaultFormValues: StrokeRiskFormValues = {
 
 export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
   const [isClient, setIsClient] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setIsClient(true);
@@ -63,36 +65,34 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Health Profile</CardTitle>
-        <CardDescription>
-          Please provide the following information to assess your stroke risk.
-        </CardDescription>
+        <CardTitle>{t('form.title')}</CardTitle>
+        <CardDescription>{t('form.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           {!isClient ? (
             <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div className="space-y-2"><FormLabel>Age</FormLabel><Input disabled /></div>
-                    <div className="space-y-2"><FormLabel>Gender</FormLabel><div className="h-10"></div></div>
-                    <div className="space-y-2"><FormLabel>Body Mass Index (BMI)</FormLabel><Input disabled /></div>
-                    <div className="space-y-2"><FormLabel>Average Glucose Level</FormLabel><Input disabled /></div>
+                    <div className="space-y-2"><FormLabel>{t('form.age.label')}</FormLabel><Input disabled /></div>
+                    <div className="space-y-2"><FormLabel>{t('form.gender.label')}</FormLabel><div className="h-10"></div></div>
+                    <div className="space-y-2"><FormLabel>{t('form.bmi.label')}</FormLabel><Input disabled /></div>
+                    <div className="space-y-2"><FormLabel>{t('form.glucose.label')}</FormLabel><Input disabled /></div>
                 </div>
                 <div className="space-y-4 rounded-lg border p-4">
-                    <h3 className="text-base font-medium">Medical History</h3>
+                    <h3 className="text-base font-medium">{t('form.medicalHistory.title')}</h3>
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Hypertension</FormLabel><FormDescription>History of high blood pressure.</FormDescription></div><Switch disabled /></div>
-                        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Heart Disease</FormLabel><FormDescription>History of heart disease.</FormDescription></div><Switch disabled /></div>
+                        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>{t('form.hypertension.label')}</FormLabel><FormDescription>{t('form.hypertension.description')}</FormDescription></div><Switch disabled /></div>
+                        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>{t('form.heartDisease.label')}</FormLabel><FormDescription>{t('form.heartDisease.description')}</FormDescription></div><Switch disabled /></div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div className="space-y-2"><FormLabel>Ever Married?</FormLabel><div className="h-10"></div></div>
-                    <div className="space-y-2"><FormLabel>Residence Type</FormLabel><div className="h-10"></div></div>
-                    <div className="space-y-2"><FormLabel>Work Type</FormLabel><Select disabled><SelectTrigger><SelectValue /></SelectTrigger></Select></div>
-                    <div className="space-y-2"><FormLabel>Smoking Status</FormLabel><Select disabled><SelectTrigger><SelectValue /></SelectTrigger></Select></div>
+                    <div className="space-y-2"><FormLabel>{t('form.married.label')}</FormLabel><div className="h-10"></div></div>
+                    <div className="space-y-2"><FormLabel>{t('form.residence.label')}</FormLabel><div className="h-10"></div></div>
+                    <div className="space-y-2"><FormLabel>{t('form.work.label')}</FormLabel><Select disabled><SelectTrigger><SelectValue /></SelectTrigger></Select></div>
+                    <div className="space-y-2"><FormLabel>{t('form.smoking.label')}</FormLabel><Select disabled><SelectTrigger><SelectValue /></SelectTrigger></Select></div>
                 </div>
                 <Button type="submit" className="w-full" disabled>
-                  Calculate Risk
+                  {t('form.submit.default')}
                 </Button>
             </div>
           ) : (
@@ -103,9 +103,9 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="age"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Age</FormLabel>
+                      <FormLabel>{t('form.age.label')}</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g. 55" {...field} value={field.value ?? ''} />
+                        <Input type="number" placeholder={t('form.age.placeholder')} {...field} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -116,20 +116,20 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="gender"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Gender</FormLabel>
+                      <FormLabel>{t('form.gender.label')}</FormLabel>
                       <FormControl>
                         <RadioGroup onValueChange={field.onChange} value={field.value} className="flex space-x-4 pt-2">
                           <FormItem className="flex items-center space-x-2">
                             <FormControl><RadioGroupItem value="Male" /></FormControl>
-                            <FormLabel className="font-normal">Male</FormLabel>
+                            <FormLabel className="font-normal">{t('form.gender.male')}</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2">
                             <FormControl><RadioGroupItem value="Female" /></FormControl>
-                            <FormLabel className="font-normal">Female</FormLabel>
+                            <FormLabel className="font-normal">{t('form.gender.female')}</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2">
                             <FormControl><RadioGroupItem value="Other" /></FormControl>
-                            <FormLabel className="font-normal">Other</FormLabel>
+                            <FormLabel className="font-normal">{t('form.gender.other')}</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -142,9 +142,9 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="bmi"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Body Mass Index (BMI)</FormLabel>
+                      <FormLabel>{t('form.bmi.label')}</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.1" placeholder="e.g. 28.7" {...field} value={field.value ?? ''} />
+                        <Input type="number" step="0.1" placeholder={t('form.bmi.placeholder')} {...field} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -155,9 +155,9 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="avgGlucoseLevel"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Average Glucose Level</FormLabel>
+                      <FormLabel>{t('form.glucose.label')}</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.1" placeholder="e.g. 105.3" {...field} value={field.value ?? ''} />
+                        <Input type="number" step="0.1" placeholder={t('form.glucose.placeholder')} {...field} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -166,7 +166,7 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
               </div>
               
               <div className="space-y-4 rounded-lg border p-4">
-                 <h3 className="text-base font-medium">Medical History</h3>
+                 <h3 className="text-base font-medium">{t('form.medicalHistory.title')}</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                       <FormField
                           control={form.control}
@@ -174,8 +174,8 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                           render={({ field }) => (
                           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                               <div className="space-y-0.5">
-                              <FormLabel>Hypertension</FormLabel>
-                              <FormDescription>History of high blood pressure.</FormDescription>
+                              <FormLabel>{t('form.hypertension.label')}</FormLabel>
+                              <FormDescription>{t('form.hypertension.description')}</FormDescription>
                               </div>
                               <FormControl>
                               <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -189,8 +189,8 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                           render={({ field }) => (
                           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                               <div className="space-y-0.5">
-                              <FormLabel>Heart Disease</FormLabel>
-                              <FormDescription>History of heart disease.</FormDescription>
+                              <FormLabel>{t('form.heartDisease.label')}</FormLabel>
+                              <FormDescription>{t('form.heartDisease.description')}</FormDescription>
                               </div>
                               <FormControl>
                               <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -207,16 +207,16 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="everMarried"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ever Married?</FormLabel>
+                      <FormLabel>{t('form.married.label')}</FormLabel>
                       <FormControl>
                         <RadioGroup onValueChange={field.onChange} value={field.value} className="flex space-x-4 pt-2">
                           <FormItem className="flex items-center space-x-2">
                             <FormControl><RadioGroupItem value="Yes" /></FormControl>
-                            <FormLabel className="font-normal">Yes</FormLabel>
+                            <FormLabel className="font-normal">{t('form.married.yes')}</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2">
                             <FormControl><RadioGroupItem value="No" /></FormControl>
-                            <FormLabel className="font-normal">No</FormLabel>
+                            <FormLabel className="font-normal">{t('form.married.no')}</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -229,16 +229,16 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="residenceType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Residence Type</FormLabel>
+                      <FormLabel>{t('form.residence.label')}</FormLabel>
                       <FormControl>
                         <RadioGroup onValueChange={field.onChange} value={field.value} className="flex space-x-4 pt-2">
                           <FormItem className="flex items-center space-x-2">
                             <FormControl><RadioGroupItem value="Urban" /></FormControl>
-                            <FormLabel className="font-normal">Urban</FormLabel>
+                            <FormLabel className="font-normal">{t('form.residence.urban')}</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2">
                             <FormControl><RadioGroupItem value="Rural" /></FormControl>
-                            <FormLabel className="font-normal">Rural</FormLabel>
+                            <FormLabel className="font-normal">{t('form.residence.rural')}</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -251,17 +251,17 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="workType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Work Type</FormLabel>
+                      <FormLabel>{t('form.work.label')}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger><SelectValue placeholder="Select a work type" /></SelectTrigger>
+                          <SelectTrigger><SelectValue placeholder={t('form.work.placeholder')} /></SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Private">Private</SelectItem>
-                          <SelectItem value="Self-employed">Self-employed</SelectItem>
-                          <SelectItem value="Govt_job">Government Job</SelectItem>
-                          <SelectItem value="children">Children</SelectItem>
-                          <SelectItem value="Never_worked">Never Worked</SelectItem>
+                          <SelectItem value="Private">{t('form.work.private')}</SelectItem>
+                          <SelectItem value="Self-employed">{t('form.work.selfEmployed')}</SelectItem>
+                          <SelectItem value="Govt_job">{t('form.work.govtJob')}</SelectItem>
+                          <SelectItem value="children">{t('form.work.children')}</SelectItem>
+                          <SelectItem value="Never_worked">{t('form.work.neverWorked')}</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -273,16 +273,16 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   name="smokingStatus"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Smoking Status</FormLabel>
+                      <FormLabel>{t('form.smoking.label')}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger><SelectValue placeholder="Select smoking status" /></SelectTrigger>
+                          <SelectTrigger><SelectValue placeholder={t('form.smoking.placeholder')} /></SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="formerly smoked">Formerly Smoked</SelectItem>
-                          <SelectItem value="never smoked">Never Smoked</SelectItem>
-                          <SelectItem value="smokes">Smokes</SelectItem>
-                          <SelectItem value="Unknown">Unknown</SelectItem>
+                          <SelectItem value="formerly smoked">{t('form.smoking.formerly')}</SelectItem>
+                          <SelectItem value="never smoked">{t('form.smoking.never')}</SelectItem>
+                          <SelectItem value="smokes">{t('form.smoking.smokes')}</SelectItem>
+                          <SelectItem value="Unknown">{t('form.smoking.unknown')}</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -293,7 +293,7 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
               
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isSubmitting ? 'Analyzing...' : 'Calculate Risk'}
+                {isSubmitting ? t('form.submit.loading') : t('form.submit.default')}
               </Button>
             </form>
           )}
