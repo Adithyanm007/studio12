@@ -68,7 +68,7 @@ async function getStrokeRisk(payload: StrokeRiskFormValues, modelName: string): 
 
     pythonProcess.on('error', (err) => {
         console.error('Failed to start subprocess.', err);
-        reject(new Error('Could not execute prediction script.'));
+        reject(new Error('Could not execute prediction script. Please ensure Python is installed and in the system PATH.'));
     });
 
     // Send payload to the python script
