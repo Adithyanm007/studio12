@@ -1,18 +1,29 @@
 
 'use server';
 
-import { spawn } from 'child_process';
+import { spawn, type ChildProcess } from 'child_process';
 import { summarizeFactors, type SummarizeFactorsInput } from '@/ai/flows/summarize-factors';
 import { generateInsights, type GenerateInsightsInput, type GenerateInsightsOutput } from '@/ai/flows/generate-insights';
 import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 
 // This function calls the ML model to get a risk score.
 async function getStrokeRisk(payload: StrokeRiskFormValues, modelName: string): Promise<number> {
-  console.log("About to run prediction script with payload:", payload, "and model:", modelName);
-
+  
   return new Promise((resolve, reject) => {
-    // Ensure python3 is in the path. On some systems it might be just python.
-    const pythonProcess = spawn('python3', ['src/ai/predict.py', modelName]);
+    let pythonProcess: ChildProcess;
+    try {
+      // First, try to use 'python3'
+      pythonProcess = spawn('python3', ['src/ai/predict.py', modelName]);
+    } catch (error) {
+      // If 'python3' fails, try 'python'. This provides flexibility across environments.
+      try {
+        pythonProcess = spawn('python', ['src/ai/predict.py', modelName]);
+      } catch (e) {
+         console.error('Failed to start subprocess with both python3 and python.', e);
+         reject(new Error('Could not execute prediction script. Please ensure Python is installed and in the system PATH.'));
+         return;
+      }
+    }
 
     let predictionData = '';
     let errorData = '';
