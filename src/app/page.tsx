@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StrokeRiskForm } from '@/components/stroke-risk-form';
 import { ResultsDisplay } from '@/components/results-display';
 import { getStrokePredictionAndInsights, type PredictionAndInsightsResult } from '@/app/actions';
@@ -10,6 +10,36 @@ import { Logo } from '@/components/logo';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from '@/hooks/use-translation';
 import { LanguageSwitcher } from '@/components/language-switcher';
+
+function ClientOnlyStrokeForm({ onSubmit }: { onSubmit: (data: StrokeRiskFormValues) => void }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+        <div className="space-y-6 rounded-lg border p-6">
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-10 w-full" />
+            </div>
+             <div className="space-y-2">
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-10 w-full" />
+            </div>
+            <Skeleton className="h-10 w-full" />
+        </div>
+    );
+  }
+
+  return <StrokeRiskForm onSubmit={onSubmit} />;
+}
 
 
 export default function Home() {
@@ -60,7 +90,7 @@ export default function Home() {
         ) : results ? (
           <ResultsDisplay results={results} onReset={handleReset} />
         ) : (
-          <StrokeRiskForm onSubmit={handleFormSubmit} />
+          <ClientOnlyStrokeForm onSubmit={handleFormSubmit} />
         )}
       </main>
       <footer className="mt-8 text-center text-sm text-muted-foreground">
