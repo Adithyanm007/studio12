@@ -21,7 +21,11 @@ def main():
             print(json.dumps({'error': 'No model name provided.'}), file=sys.stderr)
             sys.exit(1)
         model_name = sys.argv[1]
-        model_path = f'src/ai/model/{model_name}'
+        
+        # Get the directory where the script is located to build an absolute path
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        model_path = os.path.join(script_dir, 'model', model_name)
+
 
         if not os.path.exists(model_path):
             print(json.dumps({'error': f'Model file not found at {model_path}. Please ensure the model file exists.'}), file=sys.stderr)
