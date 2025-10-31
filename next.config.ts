@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  devServer: {
+    // With this option, Next.js will dynamically allow all origins in a cloud-based development environment.
+    // This is safe in this context because the environment is already secured.
+    allowedForwardedHosts: ['localhost'],
+  }
 };
 
 export default nextConfig;
