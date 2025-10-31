@@ -9,7 +9,8 @@ import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 async function getStrokeRisk(payload: StrokeRiskFormValues): Promise<number> {
   console.log("About to make prediction API call with payload:", payload);
   try {
-    const response = await fetch('http://127.0.0.1:5000/predict', {
+    // Use host.docker.internal to connect to a service running on the host machine from inside the Next.js container
+    const response = await fetch('http://host.docker.internal:5000/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
