@@ -7,6 +7,7 @@ import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 
 // This function calls the ML model to get a risk score.
 async function getStrokeRisk(payload: StrokeRiskFormValues): Promise<number> {
+  console.log("About to make prediction API call with payload:", payload);
   try {
     const response = await fetch('http://127.0.0.1:5000/predict', {
       method: 'POST',
@@ -15,6 +16,8 @@ async function getStrokeRisk(payload: StrokeRiskFormValues): Promise<number> {
     });
 
     if (!response.ok) {
+        const errorBody = await response.text();
+        console.error(`HTTP error! status: ${response.status}`, errorBody);
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
