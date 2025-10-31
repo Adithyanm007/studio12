@@ -1,58 +1,71 @@
 
 'use server';
 
+import { spawn } from 'child_process';
+import path from 'path';
 import { summarizeFactors, type SummarizeFactorsInput } from '@/ai/flows/summarize-factors';
 import { generateInsights, type GenerateInsightsInput, type GenerateInsightsOutput } from '@/ai/flows/generate-insights';
 import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 
-
-// This function calls the ML model to get a risk score.
+// This function calls a Python script to get a risk score from the ML model.
 async function getStrokeRisk(payload: StrokeRiskFormValues, modelName: string): Promise<number> {
-    // We remove the model name from the payload before sending it to the python server
-    const { model, ...patientData } = payload;
-    
-    console.log('Sending payload to prediction service:', patientData);
+    return new Promise((resolve, reject) => {
+        const { model, ...patientData } = payload;
+        
+        console.log('Sending payload to python script:', { patientData, modelName });
 
-    try {
-        const response = await fetch('http://172.17.0.2:5000/predict', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            // The python server expects a specific set of keys.
-            body: JSON.stringify({
-                ...patientData,
-                Residence_type: patientData.residenceType,
-                avg_glucose_level: patientData.avgGlucoseLevel,
-                ever_married: patientData.everMarried,
-                work_type: patientData.workType,
-                smoking_status: patientData.smokingStatus,
-                // The model name is not part of the payload for the python server
-                // as it is handled by the python server itself if needed,
-                // or you could pass it as a query param if your server supports it.
-            }),
+        // The Python script will be in the `src/ai` directory.
+        // We construct an absolute path to it to be safe.
+        const scriptPath = path.resolve(process.cwd(), 'src', 'ai', 'predict.py');
+        const modelPath = path.resolve(process.cwd(), 'src', 'ai', 'model', modelName);
+
+        // Using an absolute path to the python executable
+        const pythonExecutable = '/usr/bin/python3';
+
+        const pythonProcess = spawn(pythonExecutable, [
+            scriptPath,
+            JSON.stringify(patientData),
+            modelPath
+        ]);
+
+        let predictionResult = '';
+        let errorResult = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+            predictionResult += data.toString();
         });
 
-        if (!response.ok) {
-            const errorBody = await response.text();
-            console.error(`Prediction service responded with status ${response.status}: ${errorBody}`);
-            throw new Error(`The prediction service failed with status: ${response.status}`);
-        }
+        pythonProcess.stderr.on('data', (data) => {
+            errorResult += data.toString();
+        });
 
-        const result = await response.json();
-
-        if (result.strokeRisk !== undefined) {
-            console.log('Predicted stroke risk:', result.strokeRisk);
-            // The model returns a value between 0 and 1, so we convert it to a percentage.
-            return Math.round(result.strokeRisk * 100);
-        } else {
-            console.error('Error from prediction script:', result.error);
-            throw new Error(result.error || 'Failed to get stroke risk from script.');
-        }
-    } catch (error) {
-        console.error('Fetch error:', error);
-        throw new Error('Could not connect to the prediction service. Please ensure the Python server is running.');
-    }
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`Python script exited with code ${code}: ${errorResult}`);
+                reject(new Error(`Prediction script failed: ${errorResult}`));
+            } else {
+                try {
+                    const result = JSON.parse(predictionResult);
+                    if (result.strokeRisk !== undefined) {
+                        console.log('Predicted stroke risk:', result.strokeRisk);
+                        // The model returns a value between 0 and 1, so we convert it to a percentage.
+                        resolve(Math.round(result.strokeRisk * 100));
+                    } else {
+                        console.error('Error from prediction script:', result.error);
+                        reject(new Error(result.error || 'Failed to get stroke risk from script.'));
+                    }
+                } catch (e) {
+                    console.error('Failed to parse python script output:', predictionResult);
+                    reject(new Error('Failed to parse prediction result.'));
+                }
+            }
+        });
+        
+        pythonProcess.on('error', (err) => {
+            console.error('Failed to start subprocess.', err);
+            reject(new Error('Could not execute prediction script. Please ensure Python is installed and in the system PATH.'));
+        });
+    });
 }
 
 
@@ -68,7 +81,6 @@ export async function getStrokePredictionAndInsights(formData: StrokeRiskFormVal
     const validatedData = strokeRiskSchema.parse(formData);
     const { model, ...patientData } = validatedData;
 
-    // You can now specify which model to use, e.g., getStrokeRisk(validatedData, 'other_model.pkl')
     const riskScore = await getStrokeRisk(validatedData, model);
 
     const summaryInput: SummarizeFactorsInput = {
