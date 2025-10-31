@@ -13,10 +13,7 @@ export const strokeRiskSchema = z.object({
   everMarried: z.enum(['Yes', 'No'], {
     required_error: 'Marital status is required.',
   }),
-  workType: z.enum(['Private', 'Self-employed', 'Govt_job', 'children', 'Never_worked'], {
-    required_error: 'Please select a work type.',
-    invalid_type_error: "Please select a work type."
-  }),
+  workType: z.string().refine(val => val && val.length > 0, { message: "Please select a work type." }),
   residenceType: z.enum(['Urban', 'Rural'], {
     required_error: 'Residence type is required.',
   }),
@@ -26,10 +23,7 @@ export const strokeRiskSchema = z.object({
   bmi: z.coerce.number()
     .min(10, 'BMI must be at least 10.')
     .max(100, 'BMI must be 100 or less.'),
-  smokingStatus: z.enum(['formerly smoked', 'never smoked', 'smokes', 'Unknown'], {
-    required_error: 'Please select a smoking status.',
-    invalid_type_error: "Please select a smoking status."
-  }),
+  smokingStatus: z.string().refine(val => val && val.length > 0, { message: "Please select a smoking status." }),
 });
 
 export type StrokeRiskFormValues = z.infer<typeof strokeRiskSchema>;
