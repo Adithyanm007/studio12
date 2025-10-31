@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const strokeRiskSchema = z.object({
@@ -14,7 +15,7 @@ export const strokeRiskSchema = z.object({
   }),
   workType: z.enum(['Private', 'Self-employed', 'Govt_job', 'children', 'Never_worked'], {
     required_error: 'Please select a work type.',
-    invalid_type_error: 'Please select a work type.'
+    invalid_type_error: "Please select a work type."
   }),
   residenceType: z.enum(['Urban', 'Rural'], {
     required_error: 'Residence type is required.',
@@ -27,7 +28,7 @@ export const strokeRiskSchema = z.object({
     .max(100, 'BMI must be 100 or less.'),
   smokingStatus: z.enum(['formerly smoked', 'never smoked', 'smokes', 'Unknown'], {
     required_error: 'Please select a smoking status.',
-    invalid_type_error: 'Please select a smoking status.'
+    invalid_type_error: "Please select a smoking status."
   }),
 });
 
