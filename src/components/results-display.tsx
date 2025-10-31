@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lightbulb, ShieldCheck, FileText, Repeat } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { PredictionAndInsightsResult } from '@/app/actions';
+import type { PredictionAndInsightsResult } from '@/app/page';
 import {
   Accordion,
   AccordionContent,

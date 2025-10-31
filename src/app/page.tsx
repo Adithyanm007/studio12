@@ -4,12 +4,20 @@
 import { useState, useEffect } from 'react';
 import { StrokeRiskForm } from '@/components/stroke-risk-form';
 import { ResultsDisplay } from '@/components/results-display';
-import { getStrokePredictionAndInsights, type PredictionAndInsightsResult } from '@/app/actions';
 import type { StrokeRiskFormValues } from '@/lib/schema';
 import { Logo } from '@/components/logo';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from '@/hooks/use-translation';
 import { LanguageSwitcher } from '@/components/language-switcher';
+
+// This is the type of data we expect from our new API route
+export type PredictionAndInsightsResult = {
+  riskScore: number;
+  summary: string;
+  insights: string;
+  preventionTips: { title: string; description: string; }[];
+};
+
 
 function ClientOnlyStrokeForm({ onSubmit }: { onSubmit: (data: StrokeRiskFormValues) => void }) {
   const [isClient, setIsClient] = useState(false);
@@ -52,9 +60,22 @@ export default function Home() {
     setIsLoading(true);
     setResults(null);
     try {
-      const res = await getStrokePredictionAndInsights(data);
+      const response = await fetch('/api/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Something went wrong');
+      }
+
+      const res = await response.json();
       setResults(res);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to get prediction:", error);
       // Here you would typically show a toast notification to the user
     } finally {
