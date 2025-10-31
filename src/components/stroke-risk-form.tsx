@@ -38,6 +38,7 @@ const defaultFormValues: StrokeRiskFormValues = {
   avgGlucoseLevel: 100,
   bmi: 25,
   smokingStatus: 'never smoked',
+  model: 'stroke_model.pkl',
 };
 
 export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
@@ -290,6 +291,31 @@ export function StrokeRiskForm({ onSubmit }: StrokeRiskFormProps) {
                   )}
                 />
               </div>
+
+               <FormField
+                control={form.control}
+                name="model"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>AI Model</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an AI model" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="stroke_model.pkl">Default (Decision Tree)</SelectItem>
+                        <SelectItem value="logistic_regression_model.pkl">Logistic Regression</SelectItem>
+                        <SelectItem value="random_forest_model.pkl">Random Forest</SelectItem>
+                        <SelectItem value="gradient_boosting_model.pkl">Gradient Boosting</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>Choose which AI model to use for the prediction.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

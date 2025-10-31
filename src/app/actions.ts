@@ -7,8 +7,8 @@ import { generateInsights, type GenerateInsightsInput, type GenerateInsightsOutp
 import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 
 // This function calls the ML model to get a risk score.
-async function getStrokeRisk(payload: StrokeRiskFormValues, modelName: string = 'stroke_model.pkl'): Promise<number> {
-  console.log("About to run prediction script with payload:", payload);
+async function getStrokeRisk(payload: StrokeRiskFormValues, modelName: string): Promise<number> {
+  console.log("About to run prediction script with payload:", payload, "and model:", modelName);
 
   return new Promise((resolve, reject) => {
     // Ensure python3 is in the path. On some systems it might be just python.
@@ -77,23 +77,24 @@ export type PredictionAndInsightsResult = {
 
 export async function getStrokePredictionAndInsights(formData: StrokeRiskFormValues): Promise<PredictionAndInsightsResult> {
     const validatedData = strokeRiskSchema.parse(formData);
+    const { model, ...patientData } = validatedData;
 
     // You can now specify which model to use, e.g., getStrokeRisk(validatedData, 'other_model.pkl')
-    const riskScore = await getStrokeRisk(validatedData);
+    const riskScore = await getStrokeRisk(validatedData, model);
 
     const summaryInput: SummarizeFactorsInput = {
-        ...validatedData,
-        everMarried: validatedData.everMarried === 'Yes',
+        ...patientData,
+        everMarried: patientData.everMarried === 'Yes',
     };
     const summaryResult = await summarizeFactors(summaryInput);
 
     const insightsInput: GenerateInsightsInput = {
         riskScore,
-        age: validatedData.age,
-        gender: validatedData.gender,
-        hypertension: validatedData.hypertension,
-        heartDisease: validatedData.heartDisease,
-        smokingStatus: validatedData.smokingStatus,
+        age: patientData.age,
+        gender: patientData.gender,
+        hypertension: patientData.hypertension,
+        heartDisease: patientData.heartDisease,
+        smokingStatus: patientData.smokingStatus,
     };
     const insightsResult = await generateInsights(insightsInput);
 
