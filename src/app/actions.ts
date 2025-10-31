@@ -7,12 +7,12 @@ import { generateInsights, type GenerateInsightsInput, type GenerateInsightsOutp
 import { strokeRiskSchema, type StrokeRiskFormValues } from '@/lib/schema';
 
 // This function calls the ML model to get a risk score.
-async function getStrokeRisk(payload: StrokeRiskFormValues): Promise<number> {
+async function getStrokeRisk(payload: StrokeRiskFormValues, modelName: string = 'stroke_model.pkl'): Promise<number> {
   console.log("About to run prediction script with payload:", payload);
 
   return new Promise((resolve, reject) => {
     // Ensure python3 is in the path. On some systems it might be just python.
-    const pythonProcess = spawn('python3', ['src/ai/predict.py']);
+    const pythonProcess = spawn('python3', ['src/ai/predict.py', modelName]);
 
     let predictionData = '';
     let errorData = '';
@@ -29,7 +29,14 @@ async function getStrokeRisk(payload: StrokeRiskFormValues): Promise<number> {
       if (code !== 0) {
         console.error(`Python script exited with code ${code}`);
         console.error(errorData);
-        return reject(new Error('Prediction script failed.'));
+        // Try to parse errorData as JSON, as the python script sends structured errors
+        try {
+          const errorJson = JSON.parse(errorData);
+          reject(new Error(errorJson.error || 'Prediction script failed.'));
+        } catch (e) {
+          reject(new Error(errorData || 'Prediction script failed with an unknown error.'));
+        }
+        return;
       }
       try {
         const result = JSON.parse(predictionData);
@@ -42,7 +49,8 @@ async function getStrokeRisk(payload: StrokeRiskFormValues): Promise<number> {
           reject(new Error(result.error || 'Failed to get stroke risk from script.'));
         }
       } catch (error) {
-        console.error('Failed to parse prediction script output:', error);
+        console.error('Failed to parse prediction script output:', predictionData);
+        console.error('Stderr from script:', errorData);
         reject(new Error('Could not parse prediction output.'));
       }
     });
@@ -70,6 +78,7 @@ export type PredictionAndInsightsResult = {
 export async function getStrokePredictionAndInsights(formData: StrokeRiskFormValues): Promise<PredictionAndInsightsResult> {
     const validatedData = strokeRiskSchema.parse(formData);
 
+    // You can now specify which model to use, e.g., getStrokeRisk(validatedData, 'other_model.pkl')
     const riskScore = await getStrokeRisk(validatedData);
 
     const summaryInput: SummarizeFactorsInput = {
